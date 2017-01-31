@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+
+class Url(models.Model):
+    destination_url = models.URLField('destination url')
+    tiny_url_text = models.CharField('tiny url', max_length=10)
+    pub_date = models.DateTimeField('date published')
+    visit_counter = models.IntegerField('visit counter', default=0)
