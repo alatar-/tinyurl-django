@@ -1,1 +1,7 @@
-{{ url }}
+URL details
+<ul>
+    <li>TinyURL: <a href="{% url 'index:redirection' url.tiny_url %}">{% url 'index:redirection' url.tiny_url %}</a></li>    
+    <li>RedirectionURL: <a href="{% url 'index:redirection' url.tiny_url %}">{{ url.destination_url }}</a></li>    
+    <li>Counter: {{ url.visit_counter }}</li>    
+    <li>Submitter: not implemented</li>    
+</ul>
