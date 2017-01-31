@@ -15,7 +15,7 @@ def index(request):
 
 
 def generate(request):
-    if not request.POST['destination_url']:
+    if 'destination_url' not in request.POST:
         messages.error(request, "Please specify a destination_url.")
         return redirect('index:index')
 
@@ -33,10 +33,11 @@ def generate(request):
             break
         tiny_url = rand_tiny_url()
 
-    url = Url(destination_url=request.POST['destination_url'],
-              tiny_url=tiny_url,
-              pub_date=timezone.now())
-    url.save()
+    url = Url.objects.create(
+        destination_url=request.POST['destination_url'],
+        tiny_url=tiny_url,
+        pub_date=timezone.now()
+    )
     request.session['tiny_url'] = url.tiny_url
     return redirect('index:index')
 
