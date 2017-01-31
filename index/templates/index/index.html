@@ -1,6 +1,16 @@
 {% if created_url %}
     TinyUrl has been generated!
+
+    <a href="{% url 'index:detail' tiny_url %}">Test redirection</a>
+    <a href="{% url 'index:detail' tiny_url %}">Url detail page</a>
+
 {% endif %}
 
 Create your TinyUrl:
 
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="{% url 'index:index' %}" method="post">
+{% csrf_token %}
+    <input type="text" name="destination_url" placeholder="Type destination URL address..." />
+<input type="submit" value="Generate!" />
+</form>
