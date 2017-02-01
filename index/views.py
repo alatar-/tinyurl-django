@@ -17,18 +17,9 @@ def generate(request):
         messages.error(request, "Please specify a destination_url.")
         return redirect('index:index')
 
-    tiny_url = rand_tiny_url()
-    while True:
-        # TODO: this should be refactored to provide fixed generation time
-        # for each request, e.g. use predefined list of available urls or
-        # pre-generate few urls.
-        if not Url.objects.filter(tiny_url=tiny_url).exists():
-            break
-        tiny_url = rand_tiny_url()
-
     url = Url.objects.create(
         destination_url=request.POST['destination_url'],
-        tiny_url=tiny_url,
+        tiny_url=rand_tiny_url(),
         pub_date=timezone.now()
     )
     request.session['tiny_url'] = url.tiny_url
