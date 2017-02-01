@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from django.test.utils import setup_test_environment
 
 from index.models import Url
 
@@ -28,22 +27,18 @@ class GenerateViewTests(TestCase):
         self.assertRedirects(response, reverse('index:index'), status_code=302, target_status_code=200)
 
     def test_new_url_is_inserted_into_db(self):
-        self.client.post(
-            reverse('index:generate'),
-            {'destination_url': self.fixture_destination_url}
-        )
+        context = {'destination_url': self.fixture_destination_url}
+        self.client.post(reverse('index:generate'), context)
         assert len(Url.objects.all()) == 1
         assert len(Url.objects.filter(destination_url=self.fixture_destination_url)) == 1
 
     def test_new_url_is_passed_to_index_view(self):
-        pass
+        context = {'destination_url': self.fixture_destination_url}
+        response = self.client.post(reverse('index:generate'), context, follow=True)
+        assert 'tiny_url' in response.context
 
     def test_pass_error_message_on_empty_post_body(self):
-        setup_test_environment()
-        response = self.client.post(
-            reverse('index:generate'),
-            {}
-        )
+        response = self.client.post(reverse('index:generate'), {}, follow=True)
         messages = list(response.context['messages'])
         assert len(messages) == 1
-        assert messages[0] == 'Please specify a destination_url.'
+        assert messages[0].message == 'Please specify a destination_url.'
