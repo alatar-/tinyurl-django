@@ -17,12 +17,17 @@ def generate(request):
         messages.error(request, "Please specify a destination_url.")
         return redirect('index:index')
 
-    user = User.objects.random()
-    url = user.url_set.create(
-        destination_url=request.POST['destination_url'],
-        tiny_url=rand_tiny_url(),
-        pub_date=timezone.now()
-    )
+    destination_url = request.POST['destination_url']
+
+    url = Url.objects.filter(destination_url=destination_url).first()
+    if not url:
+        user = User.objects.random()
+        url = user.url_set.create(
+            destination_url=destination_url,
+            tiny_url=rand_tiny_url(),
+            pub_date=timezone.now()
+        )
+
     request.session['tiny_url'] = url.tiny_url
     return redirect('index:index')
 
