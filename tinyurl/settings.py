@@ -121,3 +121,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+AUTH_USER_MODEL = 'index.User'

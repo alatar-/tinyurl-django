@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 from django.contrib import messages
 
-from .models import Url
+from .models import Url, User
 from .utils import rand_tiny_url
 
 
@@ -17,7 +17,8 @@ def generate(request):
         messages.error(request, "Please specify a destination_url.")
         return redirect('index:index')
 
-    url = Url.objects.create(
+    user = User.objects.random()
+    url = user.url_set.create(
         destination_url=request.POST['destination_url'],
         tiny_url=rand_tiny_url(),
         pub_date=timezone.now()

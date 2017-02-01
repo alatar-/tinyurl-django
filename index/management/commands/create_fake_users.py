@@ -3,9 +3,9 @@ import json
 import requests
 import django.db
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
 from django.utils import timezone
 
+from index.models import User
 
 FAKE_USERS_REQUEST_URL = 'https://randomuser.me/api?results=%(requested_results)d&inc=name,email,login,registered&nat=US&noinfo'
 
@@ -44,10 +44,10 @@ class Command(BaseCommand):
             date_joined = timezone.make_aware(parsed_date, timezone.get_default_timezone())
 
             try:
-                User.objects.create_user(
+                User.objects.create(
                     username=user['login']['username'],
-                    first_name=user['name']['first'],
-                    last_name=user['name']['last'],
+                    first_name=user['name']['first'].capitalize(),
+                    last_name=user['name']['last'].capitalize(),
                     email=user['email'],
                     password=user['login']['password'],
                     date_joined=date_joined
