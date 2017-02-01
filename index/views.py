@@ -1,11 +1,9 @@
-import string
-import random
-
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 from django.contrib import messages
 
 from .models import Url
+from .utils import rand_tiny_url
 
 
 def index(request):
@@ -19,11 +17,6 @@ def generate(request):
         messages.error(request, "Please specify a destination_url.")
         return redirect('index:index')
 
-    def rand_tiny_url():
-        length = random.choice(range(3, 8))
-        symbols = (string.ascii_uppercase + string.digits)
-        tiny_url = ''.join(random.choice(symbols) for _ in range(length))
-        return tiny_url
     tiny_url = rand_tiny_url()
     while True:
         # TODO: this should be refactored to provide fixed generation time

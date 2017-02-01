@@ -15,9 +15,6 @@ def insert_url(destination_url, tiny_url):
 
 class GenerateViewTests(TestCase):
     fixture_destination_url = 'https://www.demo.com'
-    destination_url_fixture_1 = 'demo.com.pl/asdfg?agda=5'
-    destination_url_fixture_2 = 'https://demo.com'
-    destination_url_fixture_1 = 'demo.com.'
 
     def test_correct_redirection_to_index_view(self):
         response = self.client.post(
