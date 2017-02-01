@@ -9,8 +9,8 @@ import index.utils as utils
 
 def index(request):
     '''Main view that enables creation of TinyUrl's'''
-    tiny_url = request.session.pop('tiny_url', None)
-    return render(request, 'index/index.html', {'tiny_url': tiny_url})
+    urls = request.session.get('urls')
+    return render(request, 'index/index.html', {'urls': urls})
 
 
 def generate(request):
@@ -33,7 +33,11 @@ def generate(request):
                 pub_date=timezone.now()
             )
 
-        request.session['tiny_url'] = url.tiny_url
+        # Save at the beginning of session object
+        session = request.session.get('urls', [])
+        session.insert(0, url.tiny_url)
+        request.session['urls'] = session
+
         return redirect('index:index')
 
 

@@ -1,24 +1,51 @@
-{% if tiny_url %}
-    TinyUrl has been generated!
-    <input type="text" value={{ tiny_url }}></input>
-    <br />
-    <a href="{% url 'index:redirection' tiny_url %}">Test redirection</a>
-    <a href="{% url 'index:detail' tiny_url %}">Url detail page</a>
+{% extends 'index/base.html' %}
 
-{% endif %}
+{% block content %}
+    <div class="fill-height">
+        <div class="container">
+            <div class="row text-center">            
+                <h1>TinyURL <small>shorten your links.</small></h1>
+            </div>
 
-Create your TinyUrl:
+            <div class="row">
+                <div class="col-lg-offset-3 col-lg-6 col-lg-offset-3">
+                    <form action="{% url 'index:generate' %}" method="post">
+                        <div class="form-group">
+                            <!-- <label for="destinationUrl" class="control-label">Paste the URL to be shortened</label> -->
+                            <input type="text" class='form-control input-lg' id="destinationUrl" name="destination_url" placeholder="Paste the URL to be shortened...">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger custom-alert">
+                                        <a href="#" class="close" data-dismiss="alert">&times;</a>
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="form-group text-center">
+                            <!-- <div class="col-xs-offset-2 col-xs-10"> -->
+                                <button type="submit" class="btn btn-primary btn-lg">SHORTEN</button>
+                            <!-- </div> -->
+                        </div>
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-offset-3 col-lg-6 col-lg-offset-3">
+                    {% for url in urls %}
+                    <div class="panel custom-panel">
+                        <div class="panel-body">
+                            <a class="tiny-url" href="{% url 'index:redirection' url %}">{{ request.get_host }}{% url 'index:redirection' url %}</a>
+                            <button class="btn btn-sm">Copy</button>
+                        </div>
+                    </div>
+                    {% endfor %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+                </div>
+            </div>
 
-<form action="{% url 'index:generate' %}" method="post">
-{% csrf_token %}
-    <input type="text" name="destination_url" value="http://alatar.eu" placeholder="Type destination URL address..." />
-<input type="submit" value="Generate!" />
-</form>
+        </div>
+    </div>
+{% endblock content %}
