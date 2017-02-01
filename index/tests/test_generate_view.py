@@ -2,7 +2,14 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from index.models import Url
+from index.models import Url, User
+
+
+EXAMPLE_USERS = [
+    {'username': 'john123', 'first_name': "John", 'last_name': 'Wick', 'email': 'john.wick@foo.com', 'password': 'JohnPassword', 'date_joined': timezone.now()},
+    {'username': 'marta123', 'first_name': "Martha", 'last_name': 'Pink', 'email': 'marta.pink@bar.com', 'password': 'MarthaPassword', 'date_joined': timezone.now()},
+    {'username': 'nick123', 'first_name': "Nick", 'last_name': 'Depp', 'email': 'nick.depp@depp.com', 'password': 'NickPassword', 'date_joined': timezone.now()},
+]
 
 
 def insert_url(destination_url, tiny_url):
@@ -15,6 +22,10 @@ def insert_url(destination_url, tiny_url):
 
 class GenerateViewTests(TestCase):
     fixture_destination_url = 'https://www.demo.com'
+    
+    def setUp(self):
+        for user in EXAMPLE_USERS:
+            User.objects.create(**user)
 
     def test_correct_redirection_to_index_view(self):
         response = self.client.post(
