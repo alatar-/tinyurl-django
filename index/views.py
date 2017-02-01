@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 from .models import Url, User
-from .utils import rand_tiny_url
+import index.utils as utils
 
 
 def index(request):
@@ -14,22 +15,26 @@ def index(request):
 
 def generate(request):
     if 'destination_url' not in request.POST:
-        messages.error(request, "Please specify a destination_url.")
+        messages.error(request, "Please specify an URL.")
         return redirect('index:index')
 
-    destination_url = request.POST['destination_url']
+    try:
+        destination_url = utils.process_url(request.POST['destination_url'])
+    except ValidationError:
+        messages.error(request, "Destination URL is malformed. Please provide correct URL.")
+        return redirect('index:index')
+    else:
+        url = Url.objects.filter(destination_url=destination_url).first()
+        if not url:
+            user = User.objects.random()
+            url = user.url_set.create(
+                destination_url=destination_url,
+                tiny_url=utils.rand_tiny_url(),
+                pub_date=timezone.now()
+            )
 
-    url = Url.objects.filter(destination_url=destination_url).first()
-    if not url:
-        user = User.objects.random()
-        url = user.url_set.create(
-            destination_url=destination_url,
-            tiny_url=rand_tiny_url(),
-            pub_date=timezone.now()
-        )
-
-    request.session['tiny_url'] = url.tiny_url
-    return redirect('index:index')
+        request.session['tiny_url'] = url.tiny_url
+        return redirect('index:index')
 
 
 def redirection(request, tiny_url):

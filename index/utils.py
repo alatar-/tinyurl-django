@@ -1,7 +1,11 @@
 import random
 
+from django.core.validators import URLValidator
+
 from .models import Url
 import index.settings as cfg
+
+url_validator = URLValidator()
 
 
 def rand_tiny_url():
@@ -16,3 +20,17 @@ def rand_tiny_url():
         url = get_url()
         if not Url.objects.filter(tiny_url=url).exists():
             return url
+
+
+def process_url(url):
+    '''Validate provided URL, add missing scheme,
+       raises ValidationError exception on failure.
+    '''
+    url = url.lstrip(':/')
+
+    # add missing URL scheme
+    if not url.startswith('http'):
+        url = 'http://' + url
+
+    url_validator(url)
+    return url
