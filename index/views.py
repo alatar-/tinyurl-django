@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 
 from .models import Url, User
-import index.utils as utils
+from . import utils
 
 
 def index(request):

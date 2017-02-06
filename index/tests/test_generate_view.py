@@ -43,10 +43,10 @@ class GenerateViewTests(TestCase):
     def test_new_url_is_passed_to_index_view(self):
         context = {'destination_url': self.fixture_destination_url}
         response = self.client.post(reverse('index:generate'), context, follow=True)
-        assert 'tiny_url' in response.context
+        assert 'urls' in response.context
 
     def test_pass_error_message_on_empty_post_body(self):
         response = self.client.post(reverse('index:generate'), {}, follow=True)
         messages = list(response.context['messages'])
         assert len(messages) == 1
-        assert messages[0].message == 'Please specify a destination_url.'
+        assert messages[0].message == 'Please specify an URL.'

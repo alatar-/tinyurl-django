@@ -1,11 +1,12 @@
 import json
 
-import requests
 import django.db
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
-from index.models import User
+import requests
+
+from ...models import User
 
 FAKE_USERS_REQUEST_URL = 'https://randomuser.me/api?results=%(requested_results)d&inc=name,email,login,registered&nat=US&noinfo'
 
