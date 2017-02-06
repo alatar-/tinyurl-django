@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import string
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -126,3 +127,11 @@ STATIC_URL = '/static/'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 AUTH_USER_MODEL = 'index.User'
+
+# Length bounds of generated TinyURLs.
+# Db migration required upon modification.
+# See index/models.py -> Url:tiny_url
+TINY_URL_LENGTH_BOUNDS = (3, 8)
+
+# Symbols used to generate TinyURLs.
+TINY_URL_SYMBOLS = (string.ascii_uppercase + string.digits)

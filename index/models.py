@@ -2,8 +2,7 @@ from random import randint
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
-
-from .settings import TINY_URL_LENGTH_BOUNDS
+from django.conf import settings
 
 
 class ParentUserManager(UserManager):
@@ -26,7 +25,7 @@ class User(AbstractUser):
 class Url(models.Model):
     user = models.ForeignKey(User)
     destination_url = models.URLField('destination url', unique=True)
-    tiny_url = models.CharField('tiny url', unique=True, max_length=max(10, TINY_URL_LENGTH_BOUNDS[1]))
+    tiny_url = models.CharField('tiny url', unique=True, max_length=settings.TINY_URL_LENGTH_BOUNDS[1])
     pub_date = models.DateTimeField('date published')
     visit_counter = models.IntegerField('visit counter', default=0)
 
