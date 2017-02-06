@@ -9,6 +9,7 @@ url_validator = URLValidator()
 
 
 def rand_tiny_url():
+    '''Draws a new non-existing TinyURL according to settings.'''
     def get_url():
         length = random.choice(range(*settings.TINY_URL_LENGTH_BOUNDS))
         return ''.join(random.choice(settings.TINY_URL_SYMBOLS) for _ in range(length))
@@ -23,8 +24,10 @@ def rand_tiny_url():
 
 
 def process_url(url):
-    '''Validate provided URL, add missing scheme,
-       raises ValidationError exception on failure.
+    '''
+    Validate provided URL, add missing scheme.
+
+    Raises ValidationError exception on failure.
     '''
     url = url.lstrip(':/')
 

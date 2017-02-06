@@ -14,6 +14,12 @@ def index(request):
 
 
 def generate(request):
+    '''
+    Redirection routine responsible for TinyUrl generation.
+
+    Creates new URL if doesn't exist and saves into db
+    and user's session. Redirects to URL's index page.
+    '''
     if 'destination_url' not in request.POST:
         messages.error(request, "Please specify an URL.")
         return redirect('index:index')
@@ -21,7 +27,7 @@ def generate(request):
     try:
         destination_url = utils.process_url(request.POST['destination_url'])
     except ValidationError:
-        messages.error(request, "Destination URL is malformed. Please provide correct URL.")
+        messages.error(request, "Destination URL is malformed. Please provide a correct URL.")
         return redirect('index:index')
     else:
         url = Url.objects.filter(destination_url=destination_url).first()
@@ -33,10 +39,9 @@ def generate(request):
                 pub_date=timezone.now()
             )
 
-        # Save at the beginning of session object
-        session = request.session.get('urls', [])
-        session.insert(0, url.tiny_url)
-        request.session['urls'] = session
+        # Save at the front of the session object
+        request.session.setdefault('urls', []).insert(0, url.tiny_url)
+        request.session.modified = True
 
         return redirect('index:index')
 

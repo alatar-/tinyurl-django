@@ -9,7 +9,6 @@ class ParentUserManager(UserManager):
 
     def random(self):
         count = self.count()
-        print(count)
         assert count, "Users table is empty!"
         random_index = randint(0, count - 1)
         return self.all()[random_index]
